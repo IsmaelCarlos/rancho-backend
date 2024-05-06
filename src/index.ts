@@ -2,6 +2,8 @@ import express from 'express';
 import { MiddlewareAutenticacao } from './utils';
 import knex from './db';
 
+import pessoa_routes from './routes/pessoa';
+
 const app = express();
 
 app.use(express.json());
@@ -17,12 +19,8 @@ app.get('/', (req, res) => {
     res.send('hello world');
 });
 
-app.get('/teste', async (req, res) => {
+app.use('/pessoas', pessoa_routes);
 
-    const resultado =  await knex('pessoa_view').select('*');
-
-    res.json(resultado);
-});
 
 app.listen(8080, () => {
     console.log('O servidor está escutando na porta 8080');
