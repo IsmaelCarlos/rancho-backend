@@ -5,6 +5,7 @@ import knex from './db';
 
 import pessoa_routes from './routes/pessoa';
 
+const port = 6754;
 const app = express();
 
 app.use(express.json());
@@ -24,14 +25,21 @@ app.get('/', async (req, res) => {
     }, 8000);
 });
 
-app.post('/teste', (req, res) => {
-    console.log({ body: req.body });
-    res.json({ message: 'ok' });
+app.post('/teste', async (req, res) => {
+    try{
+        console.log(req.body);
+        await knex('bovino').insert(req.body);
+        res.json({ message: 'ok' });
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'not ok' });
+    }
 });
 
 app.use('/pessoas', pessoa_routes);
 
 
-app.listen(8080, () => {
-    console.log('O servidor está escutando na porta 8080');
+app.listen(port, () => {
+    console.log('O servidor está escutando na porta '.concat(port.toString()));
 });
