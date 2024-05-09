@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { MiddlewareAutenticacao } from './utils';
 import knex from './db';
 
@@ -9,14 +10,23 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(cors());
+
 
 app.post('/meu-post', MiddlewareAutenticacao, (req, res) => {
     console.log(req.body);
     res.send('OK');
 });
 
-app.get('/', (req, res) => {
-    res.send('hello world');
+app.get('/', async (req, res) => {
+    setTimeout(() => {
+        res.send('Hello');
+    }, 8000);
+});
+
+app.post('/teste', (req, res) => {
+    console.log({ body: req.body });
+    res.json({ message: 'ok' });
 });
 
 app.use('/pessoas', pessoa_routes);
