@@ -3,7 +3,9 @@ import cors from 'cors';
 import { MiddlewareAutenticacao } from './utils';
 import knex from './db';
 
-import pessoa_routes from './routes/pessoa';
+import pessoa_routes from  './routes/pessoa';
+import bovino_routes from  './routes/bovino';
+import fazenda_routes from './routes/fazenda';
 
 const port = 6754;
 const app = express();
@@ -37,8 +39,13 @@ app.post('/teste', async (req, res) => {
     }
 });
 
+app
+
 app.use('/pessoas', pessoa_routes);
 
+app.use('/bovinos', bovino_routes);
+
+app.use('/fazendas', fazenda_routes);
 
 app.listen(port, () => {
     console.log('O servidor está escutando na porta '.concat(port.toString()));
