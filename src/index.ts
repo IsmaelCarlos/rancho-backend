@@ -46,7 +46,7 @@ app
 
 app.use('/pessoas', pessoa_routes);
 
-app.use('/bovinos', bovino_routes);
+app.use('/bovino', bovino_routes);
 
 app.use('/fazendas', fazenda_routes);
 
