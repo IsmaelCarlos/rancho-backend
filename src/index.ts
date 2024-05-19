@@ -9,6 +9,7 @@ import fazenda_routes from './routes/fazenda';
 import medicamento_routes from './routes/medicamento';
 import racao_routes from './routes/racao';
 import estoque_routes from './routes/estoque';
+import axios from 'axios';
 
 const port = 6754;
 const app = express();
@@ -55,6 +56,17 @@ app.use('/medicamento', medicamento_routes);
 app.use('/racao', racao_routes);
 
 app.use('/estoque', estoque_routes);
+
+app.get('/reset_rfid', async (req, res) => {
+    try{
+        console.log('/reset_rfid')
+        await axios.get('http://192.168.0.200/reset');
+        res.send('RESET');
+    }
+    catch(err){
+        res.status(500).send("ERROR");
+    }
+});
 
 app.listen(port, () => {
     console.log('O servidor está escutando na porta '.concat(port.toString()));
