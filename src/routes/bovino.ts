@@ -4,8 +4,28 @@ import knex from '../db';
 
 const router = Router();
 
+
+const setCustomTimeout = (time: number, callback: (req: Request, res: Response, next: NextFunction) => void) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		const timer = setTimeout(() => {
+			if (req.timedout) return;
+			req.timedout = true;
+			callback(req, res, next);
+		}, time);
+
+		// Limpa o timer se a resposta for enviada antes do timeout
+		res.on('finish', () => clearTimeout(timer));
+		res.on('close', () => clearTimeout(timer));
+
+		next();
+	};
+};
+
 router.post(
     '/',
+    setCustomTimeout((10)*1000, async (req: Request, res: Response, next: NextFunction) => {
+        await axios.get('http://192.168.0.200/reset');
+	}),
     async (req, res) => {
         if(req.timedout) return;
         try{
