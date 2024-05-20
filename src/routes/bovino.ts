@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 import knex from '../db';
 
+
 const router = Router();
 
 
@@ -23,7 +24,7 @@ const setCustomTimeout = (time: number, callback: (req: Request, res: Response, 
 
 router.post(
     '/',
-    setCustomTimeout((10)*1000, async (req: Request, res: Response, next: NextFunction) => {
+    setCustomTimeout((30)*1000, async (req: Request, res: Response, next: NextFunction) => {
         await axios.get('http://192.168.0.200/reset');
 	}),
     async (req, res) => {
