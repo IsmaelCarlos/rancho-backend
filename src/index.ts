@@ -60,7 +60,7 @@ app.use('/estoque', estoque_routes);
 app.get('/reset_rfid', async (req, res) => {
     try{
         console.log('/reset_rfid')
-        await axios.get('http://192.168.0.200/reset');
+        await axios.get('http://192.168.186.164/reset');
         res.send('RESET');
     }
     catch(err){

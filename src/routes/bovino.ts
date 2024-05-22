@@ -25,7 +25,7 @@ const setCustomTimeout = (time: number, callback: (req: Request, res: Response, 
 router.post(
     '/',
     setCustomTimeout((30)*1000, async (req: Request, res: Response, next: NextFunction) => {
-        await axios.get('http://192.168.0.200/reset');
+        await axios.get('http://192.168.186.164/reset');
 	}),
     async (req, res) => {
         if(req.timedout) return;
@@ -40,7 +40,7 @@ router.post(
                             r(true);
                         }, 1200);
                     }))();
-                    uid_bovino = await axios.post('http://192.168.0.200').then(({ data }) => data);
+                    uid_bovino = await axios.post('http://192.168.186.164').then(({ data }) => data);
                 }
                 catch(err){
                     uid_bovino = "ERRO";
