@@ -5,65 +5,46 @@ import knex from '../db';
 
 const router = Router();
 
+async function getUidFromEsp(){
+    console.log("Chamando ESP");
+    const response = await axios.get('http://192.168.240.164');
+    if(response.status === 202){
+        let time = response.headers['retry-after']
+        time = parseFloat(time) * 1000;
+        console.log({ time });
+        await (() => new Promise(resolve => {
+            setTimeout(() => {
+                resolve(true);
+            }, time);
+        }))();
+        return await getUidFromEsp();
+    }
 
-const setCustomTimeout = (time: number, callback: (req: Request, res: Response, next: NextFunction) => void) => {
-	return (req: Request, res: Response, next: NextFunction) => {
-		const timer = setTimeout(() => {
-			if (req.timedout) return;
-			req.timedout = true;
-			callback(req, res, next);
-		}, time);
-
-		// Limpa o timer se a resposta for enviada antes do timeout
-		res.on('finish', () => clearTimeout(timer));
-		res.on('close', () => clearTimeout(timer));
-
-		next();
-	};
-};
+    return response.data;
+}
 
 router.post(
     '/',
-    setCustomTimeout((30)*1000, async (req: Request, res: Response, next: NextFunction) => {
-        await axios.get('http://192.168.186.164/reset');
-	}),
     async (req, res) => {
         if(req.timedout) return;
         try{
-            console.log({ body: req.body });
-            let uid_bovino = 'WAIT';
-            while(uid_bovino.match(/WAIT/)){
-                try{
-                    console.log("AGUARDANDO LEITURA", uid_bovino)
-                    await (() => new Promise(r => {
-                        setTimeout(() => {
-                            r(true);
-                        }, 1200);
-                    }))();
-                    uid_bovino = await axios.post('http://192.168.186.164').then(({ data }) => data);
-                }
-                catch(err){
-                    uid_bovino = "ERRO";
-                }
-            }
+            // Códgo que vai pegar o UID
+            const { message, uid } = await getUidFromEsp();
 
-            console.log({ uid_bovino });
-            if(uid_bovino === "ERRO"){
-                return res.status(500).json({ message: 'Erro ao ler rfid' });
-            }
 
             // const uid_bovino = await readTag();
             const bovino = {
                 ...req.body,
-                uid_bovino
+                uid_brinco: uid
             }
-    
-            console.log(bovino);
-            return res.send({ bovino });
+
+            await knex('bovino').insert(bovino);
+
+            return res.send({ payload: bovino, message });
         }
         catch(err){
-            console.error(err);
-            return res.status(500).json({ message: 'Insert falhou'});
+            console.error(err   );
+            return res.status(500).json({ message: (err as any)?.response?.data?.message??'Insert falhou'});
         }
     }
 );
