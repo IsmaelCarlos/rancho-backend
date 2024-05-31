@@ -2,25 +2,16 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { getUidFromEsp } from '../utils'
 import knex from '../db';
 
+
 const router = Router();
 
 router.post(
     '/',
     async (req, res) => {
-        try{
-            // Códgo que vai pegar o UID
-            const { message, uid } = await getUidFromEsp();
+        try{           
+            const result = await knex('medicamento_aplicado').insert(req.body, '*');
 
-
-            // const uid_bovino = await readTag();
-            const bovino = {
-                ...req.body,
-                uid_brinco: uid
-            }
-
-            await knex('bovino').insert(bovino);
-
-            return res.send({ payload: bovino, message });
+            return res.send({ payload: result, message: 'Inserido com sucesso' });
         }
         catch(err){
             console.error(err   );
@@ -28,20 +19,6 @@ router.post(
         }
     }
 );
-
-router.patch('/:id', async (req, res) => {
-    try{
-        const { id } = req.params;
-
-        const result = await knex('bovino').update(req.body);
-
-        return res.send({ payload: result, message: 'Atualizado com sucesso' });
-    }
-    catch(err){
-        console.error(err   );
-        return res.status(500).json({ message: (err as any)?.response?.data?.message??'Insert falhou'});
-    }
-});
 
 router.get('/', async (req, res) => {
     const resultado = await knex('bovino_view').select('*');

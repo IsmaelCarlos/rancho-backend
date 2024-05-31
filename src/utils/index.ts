@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
+import axios from 'axios';
 
 export function MiddlewareAutenticacao(req: Request, res: Response, next: NextFunction){
     const Authorization = req.header('Authorization') || '';
@@ -13,4 +14,22 @@ export function MiddlewareAutenticacao(req: Request, res: Response, next: NextFu
     return res.status(401).json({
         message: 'Usuário ou senha incorretos'
     });
+}
+
+export async function getUidFromEsp(){
+    console.log("Chamando ESP");
+    const response = await axios.get('http://192.168.55.164');
+    if(response.status === 202){
+        let time = response.headers['retry-after']
+        time = parseFloat(time) * 1000;
+        console.log({ time });
+        await (() => new Promise(resolve => {
+            setTimeout(() => {
+                resolve(true);
+            }, time);
+        }))();
+        return await getUidFromEsp();
+    }
+
+    return response.data;
 }
