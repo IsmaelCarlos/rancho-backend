@@ -23,8 +23,14 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    const resultado =  await knex('medicamento_view').select('*');
-    res.json(resultado);
+    try{
+        const resultado =  await knex('medicamento_view').select('*');
+        res.json(resultado);
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'Insert falhou' });
+    }
 });
 
 

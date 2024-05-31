@@ -33,7 +33,7 @@ router.patch('/:id', async (req, res) => {
     try{
         const { id } = req.params;
 
-        const result = await knex('bovino').update(req.body);
+        const result = await knex('bovino').update(req.body).where('id_bovino', '=', id);
 
         return res.send({ payload: result, message: 'Atualizado com sucesso' });
     }
@@ -44,7 +44,12 @@ router.patch('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    const resultado = await knex('bovino_view').select('*');
+    const resultado = await knex('bovino_view').select('id_bovino', 'display_brinco', 'uid_brinco', 'raca', 'classe', 'data_entrada_confinamento', 'peso_nascimento', 'peso_atual');
+    res.json(resultado);
+});
+
+router.get('/by-uid-brinco/:id', async (req, res) => {
+    const resultado = await knex('bovino_view').select('*').where('uid_brinco', '=', req.params.id);
     res.json(resultado);
 });
 
