@@ -8,6 +8,7 @@ import bovino_routes from  './routes/bovino';
 import fazenda_routes from './routes/fazenda';
 import medicamento_routes from './routes/medicamento';
 import racao_routes from './routes/racao';
+import racao_aplicada from './routes/racao_aplicada';
 import estoque_routes from './routes/estoque';
 import vacina_routes from './routes/vacina';
 import axios from 'axios';
@@ -55,6 +56,8 @@ app.use('/fazendas', fazenda_routes);
 app.use('/medicamento', medicamento_routes);
 
 app.use('/racao', racao_routes);
+
+app.use('/racao_aplicado', racao_aplicada);
 
 app.use('/estoque', estoque_routes);
 
