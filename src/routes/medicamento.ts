@@ -29,7 +29,20 @@ router.get('/', async (req, res) => {
     }
     catch(err){
         console.error(err);
-        res.status(500).json({ message: 'Insert falhou' });
+        res.status(500).json({ message: 'Busca Falhou' });
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try{
+        const resultado =  await knex('medicamento_view')
+            .select('*')
+            .where('id_medicamento', '=', req.params.id);
+        res.json(resultado);
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'Busca falhou' });
     }
 });
 
