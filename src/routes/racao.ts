@@ -17,9 +17,9 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try{
-        const resultado =  await knex('racao_view').select('*');
+        const resultado =  await knex('racao_view').select('*').where('id_racao', '=', req.params.id);
         res.json(resultado);
     }
     catch(err){
