@@ -22,6 +22,19 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.patch('/:id', async (req, res) => {
+    try{
+        const result = await knex('medicamento')
+            .update(req.body)
+            .where('id_medicamento', '=', req.params.id);
+        res.json({ result });
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({ message: 'Insert falhou' });
+    }
+});
+
 router.get('/', async (req, res) => {
     try{
         const resultado =  await knex('medicamento_view').select('*');
